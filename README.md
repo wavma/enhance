@@ -41,10 +41,10 @@ Enhance(canvas, {
 
 ### `enhance.element`
 ```javascript
-// Getter retrieves the current element
+// Retrieves the current element
 const element = enhance.element();
 
-// Setter sets a new element
+// Sets a new element and by default resets the zoom. Pass "false" to keep current zoom
 const element = enhance.element(newElement);
 ```
 
