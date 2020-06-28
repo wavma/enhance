@@ -13,20 +13,20 @@ The name "enhance" comes from the [canonical Blade Runner scene](https://www.you
 `yarn add wavma-enhance`
 
 ```javascript
-import enhance from "wavma-enhance";
+import Enhance from "wavma-enhance";
 
 const canvas = document.querySelector('.canvas');
 const element = document.querySelector('.object');
 
-enhance(canvas, { element });
+enhance = Enhance(canvas, { element });
 ```
 
 ## Options
 
 ```javascript
-enhance(canvas, { 
+Enhance(canvas, { 
   element: element,   // DOM element to focus on
-  size: "contain",    // "contain", "cover", or "50", "100", "200" (percent)
+  zoom: "contain",    // "contain", "cover", or "50", "100", "200" (percent)
   position: "50 50",  // "0 0", "100 100" 
   offsetX: 0,         // default X offset on load and reset
   offsetY: 0,         // default Y offset on load and reset
@@ -36,3 +36,17 @@ enhance(canvas, {
   window: false,      // enable zoom window selection
 });
 ```
+
+## Methods
+
+### `enhance.element`
+```javascript
+// Getter retrieves the current element
+const element = enhance.element();
+// Setter sets a new element
+const element = enhance.element(newElement);
+```
+
+### `enhance.zoom`
+
+### `enhance.position`
