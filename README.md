@@ -9,7 +9,7 @@ enhance.js is a library to provide zooming and panning features to any dom eleme
 `yarn add wavma-enhance`
 
 ```javascript
-import enhance from "wavma-enhance"
+import enhance from "wavma-enhance";
 
 const canvas = document.querySelector('.canvas');
 const element = document.querySelector('.object');
@@ -21,13 +21,13 @@ enhance(canvas, { element });
 
 ```javascript
 enhance(canvas, { 
-  element: element, // DOM element to focus on
-  init: "fit", // "fit", "fill", "full" or "100" (percent)
-  offsetX: 0, // default X offset on load and reset
-  offsetY: 0, // default Y offset on load and reset
-  keyboard: true, // enable keyboard shortcuts
-  trackpad: true, // enable trackpad pinch-to-zoom and pan
-  pan: false, // enable panning by holding down spacebar and dragging on canvas
-  window: false, // enable zoom window selection
+  element: element,  // DOM element to focus on
+  init: "fit",       // "fit", "fill", "full" or "100" (percent)
+  offsetX: 0,        // default X offset on load and reset
+  offsetY: 0,        // default Y offset on load and reset
+  keyboard: true,    // enable keyboard shortcuts
+  trackpad: true,    // enable trackpad pinch-to-zoom and pan
+  pan: false,        // enable panning by holding down spacebar and dragging on canvas
+  window: false,     // enable zoom window selection
 });
 ```
