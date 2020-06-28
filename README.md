@@ -18,7 +18,7 @@ import Enhance from "wavma-enhance";
 const canvas = document.querySelector('.canvas');
 const element = document.querySelector('.object');
 
-enhance = Enhance(canvas, { element });
+const enhance = Enhance(canvas, { element });
 ```
 
 ## Options
