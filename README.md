@@ -15,16 +15,19 @@ The name "enhance" comes from the [canonical Blade Runner scene](https://www.you
 ```javascript
 import Enhance from "wavma-enhance";
 
-const canvas = document.querySelector('.canvas');
-const element = document.querySelector('.object');
+// enhance needs a parent element to scale within
+const parent = document.querySelector('.parent');
 
-const enhance = Enhance(canvas, { element });
+// the element is the actual dom object you want to zoom or pan
+const element = document.querySelector('.element');
+
+const enhance = Enhance(parent, { element });
 ```
 
 ## Options
 
 ```javascript
-Enhance(canvas, { 
+Enhance(parent, { 
   element: element,   // DOM element to focus on
   scale: "contain",    // "contain", "cover", or 0.5, 1, 2.5 (float)
   position: "50 50",  // "0 0", "100 100" 
