@@ -26,7 +26,7 @@ const enhance = Enhance(canvas, { element });
 ```javascript
 Enhance(canvas, { 
   element: element,   // DOM element to focus on
-  zoom: "contain",    // "contain", "cover", or "50", "100", "200" (percent)
+  scale: "contain",    // "contain", "cover", or 0.5, 1, 2.5 (float)
   position: "50 50",  // "0 0", "100 100" 
   offsetX: 0,         // default X offset on load and reset
   offsetY: 0,         // default Y offset on load and reset
@@ -40,6 +40,8 @@ Enhance(canvas, {
 ## Methods
 
 ### `enhance.element`
+Use this method to allow users to upload new images (often svg) or click on different dom elements to reset the zoom.
+
 ```javascript
 // Retrieves the current element
 const element = enhance.element();
@@ -49,6 +51,13 @@ const element = enhance.element();
 enhance.element(newElement);
 ```
 
-### `enhance.zoom`
+### `enhance.scale`
+Use this method to create an input for users to manual type in their input or a dropdown (ala Google Docs, Photoshop, etc). 
 
-### `enhance.position`
+```javascript
+// Retrieves the current scale
+const scale = enhance.scale();
+
+// Sets a new scale
+enhance.scale(1);
+```
