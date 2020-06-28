@@ -44,7 +44,8 @@ Enhance(canvas, {
 // Retrieves the current element
 const element = enhance.element();
 
-// Sets a new element and by default resets the zoom. Pass "false" to keep current zoom
+// Sets a new element and by default resets the zoom
+// Pass a second argument "false" to keep current zoom
 enhance.element(newElement);
 ```
 
