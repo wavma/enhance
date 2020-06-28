@@ -2,6 +2,8 @@
 
 enhance.js is a library to provide zooming and panning features to any dom element. Influenced by vectors tools like Figma, Sketch, and Autocad enhance works well with a trackpad (pin-to-zoom) or a mouse (scrollwheel).
 
+The name "enhance" comes from the [canonical Blade Runner scene](https://www.youtube.com/watch?v=hHwjceFcF2Q).
+
 ## Getting started
 
 `npm i wavma-enhance`
