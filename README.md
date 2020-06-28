@@ -43,6 +43,7 @@ Enhance(canvas, {
 ```javascript
 // Getter retrieves the current element
 const element = enhance.element();
+
 // Setter sets a new element
 const element = enhance.element(newElement);
 ```
