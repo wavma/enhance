@@ -52,7 +52,7 @@ enhance.element(newElement);
 ```
 
 ### `enhance.scale`
-Use this method to create an input for users to manual type in their input or a dropdown (ala Google Docs, Photoshop, etc). 
+Use this method to create an input for users to manual type in their scale (often easier to think in percentage 0-100%) or a dropdown (ala Google Docs, Photoshop, etc). 
 
 ```javascript
 // Retrieves the current scale
