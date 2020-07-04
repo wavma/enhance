@@ -27,12 +27,12 @@ const enhance = Enhance(parent, { element });
 ## Options
 
 ```javascript
-Enhance(parent, { 
+Enhance(parent, {
   element: element,   // DOM element to focus on
   scale: "contain",   // "contain", "cover", or 0.5, 1, 2.5 (float)
   max: 50,            // Maximum zoom scale, Firefox struggles past 5.
   min: 0.1,           // Minimum zoom scale
-  position: "50 50",  // "0 0", "100 100" 
+  position: "50 50",  // "0 0", "100 100"
   offsetX: 0,         // default X offset on load and reset
   offsetY: 0,         // default Y offset on load and reset
   keyboard: true,     // enable keyboard shortcuts
@@ -57,7 +57,7 @@ enhance.element(newElement);
 ```
 
 ### `enhance.scale`
-Use this method to create an input for users to manual type in their scale (often easier to think in percentage 0-100%) or a dropdown (ala Google Docs, Photoshop, etc). 
+Use this method to create an input for users to manual type in their scale (often easier to think in percentage 0-100%) or a dropdown (ala Google Docs, Photoshop, etc).
 
 ```javascript
 // Retrieves the current scale
@@ -65,4 +65,15 @@ const scale = enhance.scale();
 
 // Sets a new scale
 enhance.scale(1);
+```
+
+### `enhance.disable`
+Use this method to
+
+```javascript
+// Removes all the event listener
+enhance.disable();
+
+// Restarts the event listenrs
+enhance.enable();
 ```

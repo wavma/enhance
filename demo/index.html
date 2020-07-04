@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Wavma Enhance</title>
+
+    <style>
+      .parent {
+        position: relative;
+        width: 800px;
+        height: 600px;
+        background: pink;
+        overflow: hidden;
+      }
+
+      .element {
+        position: absolute;
+        /* width: 150px; */
+        /* height: 300px; */
+        /* background: teal; */
+        transform-origin: 0 0;
+      }
+
+      .check {
+        position: absolute;
+        top: 48%;
+        width: 40px;
+        height: 40px;
+        background: red;
+        z-index: 2;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Enhance</h1>
+    <div class="parent">
+      <div class="check"></div>
+      <svg
+        class="element"
+        width="600"
+        height="200"
+        viewBox="0 0 600 200"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="600" height="200" fill="#F56565" />
+      </svg>
+
+      <!-- <div class="element"></div> -->
+    </div>
+
+    <script type="module">
+      import Enhance from "../src/index.js";
+
+      const parent = document.querySelector(".parent");
+      const element = document.querySelector(".element");
+
+      const enhance = Enhance(parent, {
+        element,
+        offset: 40,
+      });
+    </script>
+  </body>
+</html>
