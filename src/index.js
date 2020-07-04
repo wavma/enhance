@@ -1,3 +1,6 @@
+import paramsInvalid from "./params-invalid.js";
+import { disableDefault, drag, zoom } from "./events.js";
+
 export default function(parent, options) {
   console.log("enhance");
   let opts = {};
@@ -10,7 +13,7 @@ export default function(parent, options) {
   };
 
   const init = () => {
-    paramsCheck();
+    if (paramsInvalid(parent, options)) return;
     pbox = getBBox(parent);
 
     const defaults = {
@@ -28,36 +31,6 @@ export default function(parent, options) {
 
     element();
     addEventListeners();
-  };
-
-  const paramsCheck = () => {
-    if (!parent || !(parent instanceof Element)) {
-      console.error(
-        "You need to pass a parent element into enhance\n\n %cconst enhance = Enhance(%cparent%c, {element})",
-        "color: white",
-        "color: red",
-        "color: white"
-      );
-      return;
-    }
-    if (!options || !(options instanceof Object)) {
-      console.error(
-        "You need to pass an options object as the second argument into enhance\n\n %cconst enhance = Enhance(parent, %c{element}%c)",
-        "color: white",
-        "color: red",
-        "color: white"
-      );
-      return;
-    }
-    if (!options.element) {
-      console.error(
-        "You need to pass an element option into enhance\n\n %cconst enhance = Enhance(parent, %c{element}%c)",
-        "color: white",
-        "color: red",
-        "color: white"
-      );
-      return;
-    }
   };
 
   const scaleFactor = (scale) => {
@@ -96,38 +69,44 @@ export default function(parent, options) {
     render();
   };
 
+  const touchPanZoom = (e) => {
+    e.preventDefault();
+
+    if (e.ctrlKey || e.metaKey) {
+      const xs = (e.clientX - pbox.x - state.xoff) / state.scale;
+      const ys = (e.clientY - pbox.y - state.yoff) / state.scale;
+
+      state.scale -= e.deltaY * scaleFactor(state.scale);
+      state.scale = Math.min(Math.max(state.scale, opts.min), opts.max);
+
+      state.xoff = e.clientX - pbox.x - xs * state.scale;
+      state.yoff = e.clientY - pbox.y - ys * state.scale;
+    } else {
+      state.xoff -= e.deltaX;
+      state.yoff -= e.deltaY;
+    }
+
+    render();
+  };
+
   const addEventListeners = () => {
-    window.addEventListener(
-      "wheel",
-      (e) => {
-        (e.ctrlKey || e.metaKey) && e.preventDefault();
-      },
-      { passive: false }
-    );
+    window.addEventListener("wheel", disableDefault, { passive: false });
+    parent.addEventListener("wheel", touchPanZoom, { passive: false });
 
-    parent.addEventListener(
-      "wheel",
-      (e) => {
-        e.preventDefault();
+    addDragListeners();
+    addZoomListeners();
+  };
 
-        if (e.ctrlKey || e.metaKey) {
-          const xs = (e.clientX - pbox.x - state.xoff) / state.scale;
-          const ys = (e.clientY - pbox.y - state.yoff) / state.scale;
+  const addDragListeners = () => {
+    const dragger = drag(parent, state, render);
 
-          state.scale -= e.deltaY * scaleFactor(state.scale);
-          state.scale = Math.min(Math.max(state.scale, opts.min), opts.max);
+    parent.addEventListener("mousedown", dragger.start, false);
+    parent.addEventListener("mousemove", dragger.move, false);
+    parent.addEventListener("mouseup", dragger.end, false);
+  };
 
-          state.xoff = e.clientX - pbox.x - xs * state.scale;
-          state.yoff = e.clientY - pbox.y - ys * state.scale;
-        } else {
-          state.xoff -= e.deltaX;
-          state.yoff -= e.deltaY;
-        }
-
-        render();
-      },
-      { passive: false }
-    );
+  const addZoomListeners = () => {
+    const zoomer = zoom(parent, state, render);
   };
 
   const render = () => {
