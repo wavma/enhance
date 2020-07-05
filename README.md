@@ -74,9 +74,9 @@ enhance.scale(1);
 Use this method to
 
 ```javascript
-// Removes all the event listener
+// Removes all the event listeners
 enhance.disable();
 
-// Restarts the event listenrs
+// Restarts the event listeners
 enhance.enable();
 ```
