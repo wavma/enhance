@@ -147,7 +147,6 @@ export const zoom = (parent, state, render) => {
 
     return { init, remove };
   };
-
   let svg = SVG();
 
   const setParentCursor = (focusing) => {

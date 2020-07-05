@@ -16,10 +16,10 @@ The name "enhance" comes from the [canonical Blade Runner scene](https://www.you
 import Enhance from "wavma-enhance";
 
 // enhance needs a parent element to scale within
-const parent = document.querySelector('.parent');
+const parent = document.querySelector(".parent");
 
 // the element is the actual dom object you want to zoom or pan
-const element = document.querySelector('.element');
+const element = document.querySelector(".element");
 
 const enhance = Enhance(parent, { element });
 ```
@@ -28,23 +28,24 @@ const enhance = Enhance(parent, { element });
 
 ```javascript
 Enhance(parent, {
-  element: element,   // DOM element to focus on
-  scale: "contain",   // "contain", "cover", or 0.5, 1, 2.5 (float)
-  max: 50,            // Maximum zoom scale, Firefox struggles past 5.
-  min: 0.1,           // Minimum zoom scale
-  position: "50 50",  // "0 0", "100 100"
-  offsetX: 0,         // default X offset on load and reset
-  offsetY: 0,         // default Y offset on load and reset
-  keyboard: true,     // enable keyboard shortcuts
-  trackpad: true,     // enable trackpad pinch-to-zoom and pan
-  pan: false,         // enable panning by holding down spacebar and dragging on canvas
-  window: false,      // enable zoom window selection
+  element: element, // DOM element to focus on
+  scale: "contain", // "contain", "cover", or 0.5, 1, 2.5 (float)
+  max: 50, // Maximum zoom scale
+  min: 0.1, // Minimum zoom scale
+  position: "50 50", // "0 0", "100 100"
+  offsetX: 0, // default X offset on load and reset
+  offsetY: 0, // default Y offset on load and reset
+  keyboard: true, // enable keyboard shortcuts
+  trackpad: true, // enable trackpad pinch-to-zoom and pan
+  pan: false, // enable panning by holding down spacebar and dragging on canvas
+  window: false, // enable zoom window selection
 });
 ```
 
 ## Methods
 
 ### `enhance.element`
+
 Use this method to allow users to upload new images (often svg) or click on different dom elements to reset the zoom.
 
 ```javascript
@@ -57,6 +58,7 @@ enhance.element(newElement);
 ```
 
 ### `enhance.scale`
+
 Use this method to create an input for users to manual type in their scale (often easier to think in percentage 0-100%) or a dropdown (ala Google Docs, Photoshop, etc).
 
 ```javascript
@@ -68,6 +70,7 @@ enhance.scale(1);
 ```
 
 ### `enhance.disable`
+
 Use this method to
 
 ```javascript
