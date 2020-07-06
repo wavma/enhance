@@ -4,6 +4,7 @@
   },
   "devDependencies": {},
   "dependencies": {
+    "hotkeys-js": "^3.8.1",
     "http-server": "^0.12.3"
   }
 }

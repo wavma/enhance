@@ -1,5 +1,7 @@
 import paramsInvalid from "./params-invalid.js";
-import { disableDefault, drag, zoom } from "./events.js";
+import { disableDefault } from "./events.js";
+import drag from "./drag.js";
+import zoom from "./zoom.js";
 
 export default function(parent, options) {
   console.log("enhance");
