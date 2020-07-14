@@ -1,4 +1,4 @@
-export default function(parent, state, render) {
+export default function(parent, state, render, pbox) {
   let focus = false;
 
   const SVG = () => {
@@ -59,13 +59,10 @@ export default function(parent, state, render) {
         };
 
         const endDraw = (e) => {
-          const temp =
+          const check =
             rect.getAttribute("width") > 0 && rect.getAttribute("height") > 0;
 
-          if (temp) {
-            // zoom.element(rect);
-            rect.remove();
-          }
+          if (check) transformZoomWindow(rect);
 
           svg.removeEventListener("mousemove", drawRect);
           svg.removeEventListener("mouseup", endDraw);
@@ -82,6 +79,51 @@ export default function(parent, state, render) {
     return { init, remove };
   };
   let svg = SVG();
+
+  const transformZoomWindow = (element) => {
+    const el = element.cloneNode();
+
+    const pointX = parseFloat(element.getAttribute("x"));
+    const pointY = parseFloat(element.getAttribute("y"));
+
+    const newX = (pointX - state.xoff) / state.scale;
+    const newY = (pointY - state.yoff) / state.scale;
+    const newW = parseFloat(element.getAttribute("width")) / state.scale;
+    const newH = parseFloat(element.getAttribute("height")) / state.scale;
+
+    el.setAttribute("x", newX);
+    el.setAttribute("y", newY);
+    el.setAttribute("width", newW);
+    el.setAttribute("height", newH);
+
+    // state.element.appendChild(el);
+    setZoom({
+      x: newX,
+      y: newY,
+      width: newW,
+      height: newH,
+    });
+  };
+
+  const setZoom = (box = {}) => {
+    const deltaWidth = pbox.width / box.width;
+    const deltaHeight = pbox.height / box.height;
+
+    if (deltaWidth < deltaHeight) {
+      state.scale = deltaWidth;
+      state.xoff = pbox.width - (box.width + box.x) * state.scale;
+      state.yoff =
+        pbox.height / 2 -
+        (box.height + box.y) * state.scale +
+        (box.height / 2) * state.scale;
+    } else {
+      // state.scale = deltaHeight;
+      // state.xoff = (pbox.width - box.width * state.scale) / 2;
+      // state.yoff = pbox.height - box.height * state.scale - opts.offset;
+    }
+
+    render();
+  };
 
   const setParentCursor = (focusing) => {
     focusing

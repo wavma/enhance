@@ -54,18 +54,21 @@ export default function(parent, options) {
   const setElementSize = (el) => {
     let x, y, width, height;
     ({ x, y, width, height } = getBBox(el));
+    setSize({ x, y, width, height });
+  };
 
-    const deltaWidth = (pbox.width - opts.offset * 2) / width;
-    const deltaHeight = (pbox.height - options.offset * 2) / height;
+  const setSize = (box = {}) => {
+    const deltaWidth = (pbox.width - opts.offset * 2) / box.width;
+    const deltaHeight = (pbox.height - options.offset * 2) / box.height;
 
     if (deltaWidth < deltaHeight) {
       state.scale = deltaWidth;
-      state.xoff = pbox.width - width * state.scale - opts.offset;
-      state.yoff = (pbox.height - height * state.scale) / 2;
+      state.xoff = pbox.width - (box.width - box.x) * state.scale - opts.offset;
+      state.yoff = (pbox.height - box.height * state.scale) / 2;
     } else {
       state.scale = deltaHeight;
-      state.xoff = (pbox.width - width * state.scale) / 2;
-      state.yoff = pbox.height - height * state.scale - opts.offset;
+      state.xoff = (pbox.width - box.width * state.scale) / 2;
+      state.yoff = pbox.height - box.height * state.scale - opts.offset;
     }
 
     render();
@@ -108,7 +111,7 @@ export default function(parent, options) {
   };
 
   const addZoomListeners = () => {
-    const zoomer = zoom(parent, state, render);
+    const zoomer = zoom(parent, state, render, pbox);
   };
 
   const render = () => {

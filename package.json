@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev": "http-server -c-1"
+    "dev": "http-server -c-1",
+    "open": "open 'http://localhost:8080/demo'"
   },
   "devDependencies": {},
   "dependencies": {
