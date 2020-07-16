@@ -1,4 +1,4 @@
-import hotkeys from "./hotkeys.esm.js";
+import hotkeys from "hotkeys-js";
 
 export default function(state, render, pbox) {
   hotkeys("command+=,command+-,command+0", (e, handler) => {
