@@ -24,59 +24,65 @@ export default function(parent, state, render, pbox) {
       p.y = y;
       return p.matrixTransform(elem.getScreenCTM().inverse());
     };
-    const addEventListeners = () => {
-      svg.addEventListener("mousedown", (event) => {
-        const rect = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "rect"
-        );
 
-        const start = svgPoint(svg, event.clientX, event.clientY);
-        const color = "#0018ed";
+    const handleMouseDown = (event) => {
+      const rect = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "rect"
+      );
 
-        const drawRect = (e) => {
-          let p = svgPoint(svg, e.clientX, e.clientY);
-          let w = Math.abs(p.x - start.x);
-          let h = Math.abs(p.y - start.y);
-          if (p.x > start.x) {
-            p.x = start.x;
-          }
+      const start = svgPoint(svg, event.clientX, event.clientY);
+      const color = "#0018ed";
 
-          if (p.y > start.y) {
-            p.y = start.y;
-          }
+      const drawRect = (e) => {
+        let p = svgPoint(svg, e.clientX, e.clientY);
+        let w = Math.abs(p.x - start.x);
+        let h = Math.abs(p.y - start.y);
+        if (p.x > start.x) {
+          p.x = start.x;
+        }
 
-          rect.setAttributeNS(null, "x", Math.round(p.x));
-          rect.setAttributeNS(null, "y", Math.round(p.y));
-          rect.setAttributeNS(null, "width", Math.round(w));
-          rect.setAttributeNS(null, "height", Math.round(h));
-          rect.setAttributeNS(null, "fill", color);
-          rect.setAttributeNS(null, "fill-opacity", "0.2");
-          rect.setAttributeNS(null, "stroke", color);
-          rect.setAttributeNS(null, "stroke-width", "0.75");
+        if (p.y > start.y) {
+          p.y = start.y;
+        }
 
-          svg.appendChild(rect);
-        };
+        rect.setAttributeNS(null, "x", Math.round(p.x));
+        rect.setAttributeNS(null, "y", Math.round(p.y));
+        rect.setAttributeNS(null, "width", Math.round(w));
+        rect.setAttributeNS(null, "height", Math.round(h));
+        rect.setAttributeNS(null, "fill", color);
+        rect.setAttributeNS(null, "fill-opacity", "0.2");
+        rect.setAttributeNS(null, "stroke", color);
+        rect.setAttributeNS(null, "stroke-width", "0.75");
 
-        const endDraw = (e) => {
-          const check =
-            rect.getAttribute("width") > 0 && rect.getAttribute("height") > 0;
+        svg.appendChild(rect);
+      };
 
-          if (check) transformZoomWindow(rect);
+      const endDraw = (e) => {
+        const check =
+          rect.getAttribute("width") > 0 && rect.getAttribute("height") > 0;
 
-          svg.removeEventListener("mousemove", drawRect);
-          svg.removeEventListener("mouseup", endDraw);
-        };
+        if (check) transformZoomWindow(rect);
 
-        svg.addEventListener("mousemove", drawRect);
-        svg.addEventListener("mouseup", endDraw);
-      });
+        svg.removeEventListener("mousemove", drawRect);
+        svg.removeEventListener("mouseup", endDraw);
+        // rect.remove();
+        svg.remove();
+      };
+
+      svg.addEventListener("mousemove", drawRect);
+      svg.addEventListener("mouseup", endDraw);
     };
-    const remove = () => {
+
+    const addEventListeners = () => {
+      svg.addEventListener("mousedown", handleMouseDown);
+    };
+    const destroy = () => {
+      svg.removeEventListener("mousedown", handleMouseDown);
       svg.remove();
     };
 
-    return { init, remove };
+    return { init, destroy };
   };
   let svg = SVG();
 
@@ -96,7 +102,6 @@ export default function(parent, state, render, pbox) {
     el.setAttribute("width", newW);
     el.setAttribute("height", newH);
 
-    // state.element.appendChild(el);
     setZoom({
       x: newX,
       y: newY,
@@ -117,9 +122,12 @@ export default function(parent, state, render, pbox) {
         (box.height + box.y) * state.scale +
         (box.height / 2) * state.scale;
     } else {
-      // state.scale = deltaHeight;
-      // state.xoff = (pbox.width - box.width * state.scale) / 2;
-      // state.yoff = pbox.height - box.height * state.scale - opts.offset;
+      state.scale = deltaHeight;
+      state.xoff =
+        pbox.width / 2 -
+        (box.width + box.x) * state.scale +
+        (box.width / 2) * state.scale;
+      state.yoff = pbox.height - (box.height + box.y) * state.scale;
     }
 
     render();
@@ -143,7 +151,7 @@ export default function(parent, state, render, pbox) {
     if (e.code === "KeyZ" && focus) {
       setParentCursor(false);
       focus = false;
-      svg.remove();
+      svg.destroy();
     }
   });
 }

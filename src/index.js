@@ -2,6 +2,7 @@ import paramsInvalid from "./params-invalid.js";
 import { disableDefault } from "./events.js";
 import drag from "./drag.js";
 import zoom from "./zoom.js";
+import keyboard from "./keyboard.js";
 
 export default function(parent, options) {
   console.log("enhance");
@@ -98,8 +99,9 @@ export default function(parent, options) {
     window.addEventListener("wheel", disableDefault, { passive: false });
     parent.addEventListener("wheel", touchPanZoom, { passive: false });
 
+    keyboard(state, render, pbox);
+    zoom(parent, state, render, pbox);
     addDragListeners();
-    addZoomListeners();
   };
 
   const addDragListeners = () => {
@@ -110,15 +112,12 @@ export default function(parent, options) {
     parent.addEventListener("mouseup", dragger.end, false);
   };
 
-  const addZoomListeners = () => {
-    const zoomer = zoom(parent, state, render, pbox);
-  };
-
   const render = () => {
     window.requestAnimationFrame(() => {
       state.element.style.transform = `translate3d(${state.xoff}px,${
         state.yoff
-      }px,0px) scale(${state.scale})`;
+      }px,0px)
+       scale(${state.scale})`;
     });
   };
 
