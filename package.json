@@ -12,7 +12,7 @@
     "esm": "^3.2.25",
     "hotkeys-js": "^3.8.1"
   },
-  "name": "enhance",
+  "name": "@wavma/enhance",
   "description": "![Image of Enhance](enhance.png)",
   "version": "1.0.0",
   "main": "dist/enhance.js",
