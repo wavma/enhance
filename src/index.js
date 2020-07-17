@@ -1,4 +1,3 @@
-import paramsInvalid from "./params-invalid.js";
 import { disableDefault } from "./events.js";
 import drag from "./drag.js";
 import zoom from "./zoom.js";
@@ -35,7 +34,6 @@ export default function(options = {}) {
   };
 
   const init = (newParent) => {
-    // if (paramsInvalid(parent, options)) return;
     parent = newParent;
     pbox = getBBox(newParent);
 

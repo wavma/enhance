@@ -1,5 +1,3 @@
-// src/params-invalid.js
-
 // src/events.js
 const disableDefault = (e) => {
   (e.ctrlKey || e.metaKey) && e.preventDefault();
