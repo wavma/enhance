@@ -16,7 +16,7 @@
   },
   "name": "@wavma/enhance",
   "description": "![Image of Enhance](enhance.png)",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "dist/enhance.js",
   "repository": {
     "type": "git",
