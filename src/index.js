@@ -1,7 +1,7 @@
 import { disableDefault } from "./events.js";
 import drag from "./drag.js";
 import zoom from "./zoom.js";
-import keyboard from "./keyboard.js";
+// import keyboard from "./keyboard.js";
 
 export default function(options = {}) {
   console.log("enhance");
@@ -46,15 +46,15 @@ export default function(options = {}) {
   };
 
   const getBBox = (el) => {
-    const box = el.getBoundingClientRect();
-
-    return box;
-    // return {
-    //   x: parseFloat(element.getAttribute("x")),
-    //   y: parseFloat(element.getAttribute("y")),
-    //   width: parseFloat(element.getAttribute("width")),
-    //   height: parseFloat(element.getAttribute("height")),
-    // };
+    if (el instanceof SVGElement) {
+      return {
+        x: parseFloat(el.getAttribute("x")) || 0,
+        y: parseFloat(el.getAttribute("y")) || 0,
+        width: parseFloat(el.getAttribute("width")),
+        height: parseFloat(el.getAttribute("height")),
+      };
+    }
+    return el.getBoundingClientRect();
   };
 
   const setElementSize = (el) => {
@@ -64,6 +64,7 @@ export default function(options = {}) {
   };
 
   const setSize = (box = {}) => {
+    console.log(box);
     const deltaWidth = (pbox.width - opts.offset * 2) / box.width;
     const deltaHeight = (pbox.height - options.offset * 2) / box.height;
 
@@ -104,7 +105,7 @@ export default function(options = {}) {
     window.addEventListener("wheel", disableDefault, { passive: false });
     parent.addEventListener("wheel", touchPanZoom, { passive: false });
 
-    keyboard(state, render, pbox);
+    // keyboard(state, render, pbox);
     zoom(parent, state, render, pbox);
     addDragListeners();
   };
