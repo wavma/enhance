@@ -60,14 +60,17 @@
 
     <script type="module">
       import Enhance from "../dist/enhance.js";
+      // import Enhance from "../src/index.js";
 
       const parent = document.querySelector(".parent");
       const element = document.querySelector(".element");
 
-      const enhance = Enhance(parent, {
-        element,
+      const enhance = Enhance({
         offset: 40,
       });
+
+      enhance.init(parent);
+      enhance.element(element);
     </script>
   </body>
 </html>

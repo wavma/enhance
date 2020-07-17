@@ -4,8 +4,9 @@ import drag from "./drag.js";
 import zoom from "./zoom.js";
 import keyboard from "./keyboard.js";
 
-export default function(parent, options) {
+export default function(options = {}) {
   console.log("enhance");
+  let parent = null;
   let opts = {};
   let pbox = {};
   const state = {
@@ -15,10 +16,7 @@ export default function(parent, options) {
     yoff: 0,
   };
 
-  const init = () => {
-    if (paramsInvalid(parent, options)) return;
-    pbox = getBBox(parent);
-
+  const setup = () => {
     const defaults = {
       scale: "contain", // "contain", "cover", or 0.5, 1, 2.5 (float)
       max: 50, // Maximum zoom scale, Firefox struggles past 5.
@@ -32,7 +30,16 @@ export default function(parent, options) {
     };
     opts = Object.assign(defaults, options);
 
-    element();
+    if (options.parent) init(options.parent);
+    if (options.element) element();
+  };
+
+  const init = (newParent) => {
+    // if (paramsInvalid(parent, options)) return;
+    parent = newParent;
+    pbox = getBBox(newParent);
+
+    if (options.element) element();
     addEventListeners();
   };
 
@@ -135,8 +142,9 @@ export default function(parent, options) {
 
   const scale = (factor) => {};
 
-  init();
+  setup();
   return {
+    init,
     element,
     scale,
   };

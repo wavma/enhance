@@ -44,6 +44,9 @@ export default function(parent, state, render) {
   };
 
   document.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+      e.preventDefault();
+    }
     if (e.code === "Space" && !pan) {
       setParentCursor(true);
       pan = true;
@@ -52,6 +55,7 @@ export default function(parent, state, render) {
 
   document.addEventListener("keyup", (e) => {
     if (e.code === "Space" && pan) {
+      e.preventDefault();
       setParentCursor(false);
       pan = false;
     }

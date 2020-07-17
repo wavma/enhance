@@ -1,19 +1,4 @@
 // src/params-invalid.js
-function params_invalid_default(parent, options) {
-  if (!parent || !(parent instanceof Element)) {
-    console.error("You need to pass a parent element into enhance\n\n %cconst enhance = Enhance(%cparent%c, {element})", "color: white", "color: red", "color: white");
-    return true;
-  }
-  if (!options || !(options instanceof Object)) {
-    console.error("You need to pass an options object as the second argument into enhance\n\n %cconst enhance = Enhance(parent, %c{element}%c)", "color: white", "color: red", "color: white");
-    return true;
-  }
-  if (!options.element) {
-    console.error("You need to pass an element option into enhance\n\n %cconst enhance = Enhance(parent, %c{element}%c)", "color: white", "color: red", "color: white");
-    return true;
-  }
-  return false;
-}
 
 // src/events.js
 const disableDefault = (e) => {
@@ -58,6 +43,9 @@ function drag_default(parent, state, render) {
     panning ? parent.style.cursor = "grab" : parent.style.cursor = "default";
   };
   document.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+      e.preventDefault();
+    }
     if (e.code === "Space" && !pan) {
       setParentCursor(true);
       pan = true;
@@ -65,6 +53,7 @@ function drag_default(parent, state, render) {
   });
   document.addEventListener("keyup", (e) => {
     if (e.code === "Space" && pan) {
+      e.preventDefault();
       setParentCursor(false);
       pan = false;
     }
@@ -650,8 +639,9 @@ function keyboard_default(state, render, pbox) {
 }
 
 // src/index.js
-function src_default(parent, options) {
+function src_default(options = {}) {
   console.log("enhance");
+  let parent = null;
   let opts = {};
   let pbox = {};
   const state = {
@@ -660,10 +650,7 @@ function src_default(parent, options) {
     xoff: 0,
     yoff: 0
   };
-  const init = () => {
-    if (params_invalid_default(parent, options))
-      return;
-    pbox = getBBox(parent);
+  const setup = () => {
     const defaults = {
       scale: "contain",
       max: 50,
@@ -676,7 +663,16 @@ function src_default(parent, options) {
       window: false
     };
     opts = Object.assign(defaults, options);
-    element();
+    if (options.parent)
+      init(options.parent);
+    if (options.element)
+      element();
+  };
+  const init = (newParent) => {
+    parent = newParent;
+    pbox = getBBox(newParent);
+    if (options.element)
+      element();
     addEventListeners();
   };
   const scaleFactor = (scale2) => {
@@ -749,8 +745,9 @@ function src_default(parent, options) {
   };
   const scale = (factor) => {
   };
-  init();
+  setup();
   return {
+    init,
     element,
     scale
   };

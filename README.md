@@ -8,9 +8,9 @@ The name "enhance" comes from the [canonical Blade Runner scene](https://www.you
 
 ## Getting started
 
-`npm i wavma-enhance`
+`npm i @wavma/enhance`
 
-`yarn add wavma-enhance`
+`yarn add @wavma/enhance`
 
 ```javascript
 import Enhance from "wavma-enhance";
