@@ -9,6 +9,22 @@
     "http-server": "^0.12.3"
   },
   "dependencies": {
+    "esm": "^3.2.25",
     "hotkeys-js": "^3.8.1"
-  }
+  },
+  "name": "enhance",
+  "description": "![Image of Enhance](enhance.png)",
+  "version": "1.0.0",
+  "main": "dist/enhance.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wavma/enhance.git"
+  },
+  "keywords": [],
+  "author": "Moe Amaya",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wavma/enhance/issues"
+  },
+  "homepage": "https://github.com/wavma/enhance#readme"
 }
