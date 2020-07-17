@@ -1,7 +1,7 @@
 import { disableDefault } from "./events.js";
 import drag from "./drag.js";
 import zoom from "./zoom.js";
-// import keyboard from "./keyboard.js";
+import keyboard from "./keyboard.js";
 
 export default function(options = {}) {
   console.log("enhance");
@@ -105,7 +105,7 @@ export default function(options = {}) {
     window.addEventListener("wheel", disableDefault, { passive: false });
     parent.addEventListener("wheel", touchPanZoom, { passive: false });
 
-    // keyboard(state, render, pbox);
+    keyboard(state, render, pbox);
     zoom(parent, state, render, pbox);
     addDragListeners();
   };

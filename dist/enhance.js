@@ -180,6 +180,462 @@ function zoom_default(parent, state, render, pbox) {
   });
 }
 
+// node_modules/hotkeys-js/dist/hotkeys.esm.js
+/*!
+ * hotkeys-js v3.8.1
+ * A simple micro-library for defining and dispatching keyboard shortcuts. It has no dependencies.
+ * 
+ * Copyright (c) 2020 kenny wong <wowohoo@qq.com>
+ * http://jaywcjlove.github.io/hotkeys
+ * 
+ * Licensed under the MIT license.
+ */
+var isff = typeof navigator !== "undefined" ? navigator.userAgent.toLowerCase().indexOf("firefox") > 0 : false;
+function addEvent(object, event, method) {
+  if (object.addEventListener) {
+    object.addEventListener(event, method, false);
+  } else if (object.attachEvent) {
+    object.attachEvent("on".concat(event), function() {
+      method(window.event);
+    });
+  }
+}
+function getMods(modifier, key) {
+  var mods = key.slice(0, key.length - 1);
+  for (var i = 0; i < mods.length; i++) {
+    mods[i] = modifier[mods[i].toLowerCase()];
+  }
+  return mods;
+}
+function getKeys(key) {
+  if (typeof key !== "string")
+    key = "";
+  key = key.replace(/\s/g, "");
+  var keys = key.split(",");
+  var index = keys.lastIndexOf("");
+  for (; index >= 0; ) {
+    keys[index - 1] += ",";
+    keys.splice(index, 1);
+    index = keys.lastIndexOf("");
+  }
+  return keys;
+}
+function compareArray(a1, a2) {
+  var arr1 = a1.length >= a2.length ? a1 : a2;
+  var arr2 = a1.length >= a2.length ? a2 : a1;
+  var isIndex = true;
+  for (var i = 0; i < arr1.length; i++) {
+    if (arr2.indexOf(arr1[i]) === -1)
+      isIndex = false;
+  }
+  return isIndex;
+}
+var _keyMap = {
+  backspace: 8,
+  tab: 9,
+  clear: 12,
+  enter: 13,
+  return: 13,
+  esc: 27,
+  escape: 27,
+  space: 32,
+  left: 37,
+  up: 38,
+  right: 39,
+  down: 40,
+  del: 46,
+  delete: 46,
+  ins: 45,
+  insert: 45,
+  home: 36,
+  end: 35,
+  pageup: 33,
+  pagedown: 34,
+  capslock: 20,
+  "⇪": 20,
+  ",": 188,
+  ".": 190,
+  "/": 191,
+  "`": 192,
+  "-": isff ? 173 : 189,
+  "=": isff ? 61 : 187,
+  ";": isff ? 59 : 186,
+  "'": 222,
+  "[": 219,
+  "]": 221,
+  "\\": 220
+};
+var _modifier = {
+  "⇧": 16,
+  shift: 16,
+  "⌥": 18,
+  alt: 18,
+  option: 18,
+  "⌃": 17,
+  ctrl: 17,
+  control: 17,
+  "⌘": 91,
+  cmd: 91,
+  command: 91
+};
+var modifierMap = {
+  16: "shiftKey",
+  18: "altKey",
+  17: "ctrlKey",
+  91: "metaKey",
+  shiftKey: 16,
+  ctrlKey: 17,
+  altKey: 18,
+  metaKey: 91
+};
+var _mods = {
+  16: false,
+  18: false,
+  17: false,
+  91: false
+};
+var _handlers = {};
+for (var k = 1; k < 20; k++) {
+  _keyMap["f".concat(k)] = 111 + k;
+}
+var _downKeys = [];
+var _scope = "all";
+var elementHasBindEvent = [];
+var code = function code2(x) {
+  return _keyMap[x.toLowerCase()] || _modifier[x.toLowerCase()] || x.toUpperCase().charCodeAt(0);
+};
+function setScope(scope) {
+  _scope = scope || "all";
+}
+function getScope() {
+  return _scope || "all";
+}
+function getPressedKeyCodes() {
+  return _downKeys.slice(0);
+}
+function filter(event) {
+  var target = event.target || event.srcElement;
+  var tagName = target.tagName;
+  var flag = true;
+  if (target.isContentEditable || (tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT") && !target.readOnly) {
+    flag = false;
+  }
+  return flag;
+}
+function isPressed(keyCode) {
+  if (typeof keyCode === "string") {
+    keyCode = code(keyCode);
+  }
+  return _downKeys.indexOf(keyCode) !== -1;
+}
+function deleteScope(scope, newScope) {
+  var handlers;
+  var i;
+  if (!scope)
+    scope = getScope();
+  for (var key in _handlers) {
+    if (Object.prototype.hasOwnProperty.call(_handlers, key)) {
+      handlers = _handlers[key];
+      for (i = 0; i < handlers.length; ) {
+        if (handlers[i].scope === scope)
+          handlers.splice(i, 1);
+        else
+          i++;
+      }
+    }
+  }
+  if (getScope() === scope)
+    setScope(newScope || "all");
+}
+function clearModifier(event) {
+  var key = event.keyCode || event.which || event.charCode;
+  var i = _downKeys.indexOf(key);
+  if (i >= 0) {
+    _downKeys.splice(i, 1);
+  }
+  if (event.key && event.key.toLowerCase() === "meta") {
+    _downKeys.splice(0, _downKeys.length);
+  }
+  if (key === 93 || key === 224)
+    key = 91;
+  if (key in _mods) {
+    _mods[key] = false;
+    for (var k2 in _modifier) {
+      if (_modifier[k2] === key)
+        hotkeys[k2] = false;
+    }
+  }
+}
+function unbind(keysInfo) {
+  if (!keysInfo) {
+    Object.keys(_handlers).forEach(function(key) {
+      return delete _handlers[key];
+    });
+  } else if (Array.isArray(keysInfo)) {
+    keysInfo.forEach(function(info) {
+      if (info.key)
+        eachUnbind(info);
+    });
+  } else if (typeof keysInfo === "object") {
+    if (keysInfo.key)
+      eachUnbind(keysInfo);
+  } else if (typeof keysInfo === "string") {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+    var scope = args[0], method = args[1];
+    if (typeof scope === "function") {
+      method = scope;
+      scope = "";
+    }
+    eachUnbind({
+      key: keysInfo,
+      scope,
+      method,
+      splitKey: "+"
+    });
+  }
+}
+var eachUnbind = function eachUnbind2(_ref) {
+  var key = _ref.key, scope = _ref.scope, method = _ref.method, _ref$splitKey = _ref.splitKey, splitKey = _ref$splitKey === void 0 ? "+" : _ref$splitKey;
+  var multipleKeys = getKeys(key);
+  multipleKeys.forEach(function(originKey) {
+    var unbindKeys = originKey.split(splitKey);
+    var len = unbindKeys.length;
+    var lastKey = unbindKeys[len - 1];
+    var keyCode = lastKey === "*" ? "*" : code(lastKey);
+    if (!_handlers[keyCode])
+      return;
+    if (!scope)
+      scope = getScope();
+    var mods = len > 1 ? getMods(_modifier, unbindKeys) : [];
+    _handlers[keyCode] = _handlers[keyCode].map(function(record) {
+      var isMatchingMethod = method ? record.method === method : true;
+      if (isMatchingMethod && record.scope === scope && compareArray(record.mods, mods)) {
+        return {};
+      }
+      return record;
+    });
+  });
+};
+function eventHandler(event, handler, scope) {
+  var modifiersMatch;
+  if (handler.scope === scope || handler.scope === "all") {
+    modifiersMatch = handler.mods.length > 0;
+    for (var y in _mods) {
+      if (Object.prototype.hasOwnProperty.call(_mods, y)) {
+        if (!_mods[y] && handler.mods.indexOf(+y) > -1 || _mods[y] && handler.mods.indexOf(+y) === -1) {
+          modifiersMatch = false;
+        }
+      }
+    }
+    if (handler.mods.length === 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91] || modifiersMatch || handler.shortcut === "*") {
+      if (handler.method(event, handler) === false) {
+        if (event.preventDefault)
+          event.preventDefault();
+        else
+          event.returnValue = false;
+        if (event.stopPropagation)
+          event.stopPropagation();
+        if (event.cancelBubble)
+          event.cancelBubble = true;
+      }
+    }
+  }
+}
+function dispatch(event) {
+  var asterisk = _handlers["*"];
+  var key = event.keyCode || event.which || event.charCode;
+  if (!hotkeys.filter.call(this, event))
+    return;
+  if (key === 93 || key === 224)
+    key = 91;
+  if (_downKeys.indexOf(key) === -1 && key !== 229)
+    _downKeys.push(key);
+  ["ctrlKey", "altKey", "shiftKey", "metaKey"].forEach(function(keyName) {
+    var keyNum = modifierMap[keyName];
+    if (event[keyName] && _downKeys.indexOf(keyNum) === -1) {
+      _downKeys.push(keyNum);
+    } else if (!event[keyName] && _downKeys.indexOf(keyNum) > -1) {
+      _downKeys.splice(_downKeys.indexOf(keyNum), 1);
+    } else if (keyName === "metaKey" && event[keyName] && _downKeys.length === 3) {
+      if (!(event.ctrlKey || event.shiftKey || event.altKey)) {
+        _downKeys = _downKeys.slice(_downKeys.indexOf(keyNum));
+      }
+    }
+  });
+  if (key in _mods) {
+    _mods[key] = true;
+    for (var k2 in _modifier) {
+      if (_modifier[k2] === key)
+        hotkeys[k2] = true;
+    }
+    if (!asterisk)
+      return;
+  }
+  for (var e in _mods) {
+    if (Object.prototype.hasOwnProperty.call(_mods, e)) {
+      _mods[e] = event[modifierMap[e]];
+    }
+  }
+  if (event.getModifierState && !(event.altKey && !event.ctrlKey) && event.getModifierState("AltGraph")) {
+    if (_downKeys.indexOf(17) === -1) {
+      _downKeys.push(17);
+    }
+    if (_downKeys.indexOf(18) === -1) {
+      _downKeys.push(18);
+    }
+    _mods[17] = true;
+    _mods[18] = true;
+  }
+  var scope = getScope();
+  if (asterisk) {
+    for (var i = 0; i < asterisk.length; i++) {
+      if (asterisk[i].scope === scope && (event.type === "keydown" && asterisk[i].keydown || event.type === "keyup" && asterisk[i].keyup)) {
+        eventHandler(event, asterisk[i], scope);
+      }
+    }
+  }
+  if (!(key in _handlers))
+    return;
+  for (var _i = 0; _i < _handlers[key].length; _i++) {
+    if (event.type === "keydown" && _handlers[key][_i].keydown || event.type === "keyup" && _handlers[key][_i].keyup) {
+      if (_handlers[key][_i].key) {
+        var record = _handlers[key][_i];
+        var splitKey = record.splitKey;
+        var keyShortcut = record.key.split(splitKey);
+        var _downKeysCurrent = [];
+        for (var a2 = 0; a2 < keyShortcut.length; a2++) {
+          _downKeysCurrent.push(code(keyShortcut[a2]));
+        }
+        if (_downKeysCurrent.sort().join("") === _downKeys.sort().join("")) {
+          eventHandler(event, record, scope);
+        }
+      }
+    }
+  }
+}
+function isElementBind(element) {
+  return elementHasBindEvent.indexOf(element) > -1;
+}
+function hotkeys(key, option, method) {
+  _downKeys = [];
+  var keys = getKeys(key);
+  var mods = [];
+  var scope = "all";
+  var element = document;
+  var i = 0;
+  var keyup = false;
+  var keydown = true;
+  var splitKey = "+";
+  if (method === void 0 && typeof option === "function") {
+    method = option;
+  }
+  if (Object.prototype.toString.call(option) === "[object Object]") {
+    if (option.scope)
+      scope = option.scope;
+    if (option.element)
+      element = option.element;
+    if (option.keyup)
+      keyup = option.keyup;
+    if (option.keydown !== void 0)
+      keydown = option.keydown;
+    if (typeof option.splitKey === "string")
+      splitKey = option.splitKey;
+  }
+  if (typeof option === "string")
+    scope = option;
+  for (; i < keys.length; i++) {
+    key = keys[i].split(splitKey);
+    mods = [];
+    if (key.length > 1)
+      mods = getMods(_modifier, key);
+    key = key[key.length - 1];
+    key = key === "*" ? "*" : code(key);
+    if (!(key in _handlers))
+      _handlers[key] = [];
+    _handlers[key].push({
+      keyup,
+      keydown,
+      scope,
+      mods,
+      shortcut: keys[i],
+      method,
+      key: keys[i],
+      splitKey
+    });
+  }
+  if (typeof element !== "undefined" && !isElementBind(element) && window) {
+    elementHasBindEvent.push(element);
+    addEvent(element, "keydown", function(e) {
+      dispatch(e);
+    });
+    addEvent(window, "focus", function() {
+      _downKeys = [];
+    });
+    addEvent(element, "keyup", function(e) {
+      dispatch(e);
+      clearModifier(e);
+    });
+  }
+}
+var _api = {
+  setScope,
+  getScope,
+  deleteScope,
+  getPressedKeyCodes,
+  isPressed,
+  filter,
+  unbind
+};
+for (var a in _api) {
+  if (Object.prototype.hasOwnProperty.call(_api, a)) {
+    hotkeys[a] = _api[a];
+  }
+}
+if (typeof window !== "undefined") {
+  var _hotkeys = window.hotkeys;
+  hotkeys.noConflict = function(deep) {
+    if (deep && window.hotkeys === hotkeys) {
+      window.hotkeys = _hotkeys;
+    }
+    return hotkeys;
+  };
+  window.hotkeys = hotkeys;
+}
+var hotkeys_esm_default = hotkeys;
+
+// src/keyboard.js
+function keyboard_default(state, render, pbox) {
+  hotkeys_esm_default("command+=,command+-,command+0", (e, handler) => {
+    e.preventDefault();
+    const clientX = pbox.width / 2;
+    const clientY = pbox.height / 2;
+    const xs = (clientX - state.xoff) / state.scale;
+    const ys = (clientY - state.yoff) / state.scale;
+    switch (handler.key) {
+      case "command+=":
+        state.scale *= 1.25;
+        break;
+      case "command+-":
+        state.scale /= 1.25;
+        break;
+      case "command+0":
+        state.scale = 1;
+        break;
+    }
+    if (handler.key === "command+0") {
+      state.xoff = xPos;
+      state.yoff = yPos;
+    } else {
+      state.xoff = clientX - xs * state.scale;
+      state.yoff = clientY - ys * state.scale;
+    }
+    render();
+    return false;
+  });
+}
+
 // src/index.js
 function src_default(options = {}) {
   console.log("enhance");
@@ -269,6 +725,7 @@ function src_default(options = {}) {
   const addEventListeners = () => {
     window.addEventListener("wheel", disableDefault, {passive: false});
     parent.addEventListener("wheel", touchPanZoom, {passive: false});
+    keyboard_default(state, render, pbox);
     zoom_default(parent, state, render, pbox);
     addDragListeners();
   };
