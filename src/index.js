@@ -4,7 +4,6 @@ import zoom from "./zoom.js";
 import keyboard from "./keyboard.js";
 
 export default function(options = {}) {
-  console.log("enhance");
   let parent = null;
   let opts = {};
   let pbox = {};
@@ -64,7 +63,6 @@ export default function(options = {}) {
   };
 
   const setSize = (box = {}) => {
-    console.log(box);
     const deltaWidth = (pbox.width - opts.offset * 2) / box.width;
     const deltaHeight = (pbox.height - options.offset * 2) / box.height;
 

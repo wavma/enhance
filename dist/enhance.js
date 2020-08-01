@@ -638,7 +638,6 @@ function keyboard_default(state, render, pbox) {
 
 // src/index.js
 function src_default(options = {}) {
-  console.log("enhance");
   let parent = null;
   let opts = {};
   let pbox = {};
@@ -693,7 +692,6 @@ function src_default(options = {}) {
     setSize({x, y, width, height});
   };
   const setSize = (box = {}) => {
-    console.log(box);
     const deltaWidth = (pbox.width - opts.offset * 2) / box.width;
     const deltaHeight = (pbox.height - options.offset * 2) / box.height;
     if (deltaWidth < deltaHeight) {
