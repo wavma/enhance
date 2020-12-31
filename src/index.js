@@ -168,6 +168,7 @@ export default function(options = {}) {
   const disable = () => {
     removeEventListeners();
     state.element.style.transform = '';
+    if (opts.track) opts.track.innerText = '';
   }
 
   setup();

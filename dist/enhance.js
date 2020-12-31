@@ -40,7 +40,7 @@ function drag_default(parent, state, render) {
   const setParentCursor = (panning) => {
     panning ? parent.style.cursor = "grab" : parent.style.cursor = "default";
   };
-  document.addEventListener("keydown", (e) => {
+  const keydownHandler = (e) => {
     if (e.code === "Space") {
       e.preventDefault();
     }
@@ -48,15 +48,21 @@ function drag_default(parent, state, render) {
       setParentCursor(true);
       pan = true;
     }
-  });
-  document.addEventListener("keyup", (e) => {
+  };
+  const keyupHandler = (e) => {
     if (e.code === "Space" && pan) {
       e.preventDefault();
       setParentCursor(false);
       pan = false;
     }
-  });
-  return {start, end, move};
+  };
+  document.addEventListener("keydown", keydownHandler);
+  document.addEventListener("keyup", keyupHandler);
+  const unbind2 = () => {
+    document.removeEventListener("keydown", keydownHandler);
+    document.removeEventListener("keyup", keyupHandler);
+  };
+  return {start, end, move, unbind: unbind2};
 }
 
 // src/zoom.js
@@ -64,7 +70,7 @@ function zoom_default(parent, state, render, pbox) {
   let focus = false;
   const SVG = () => {
     let svg2;
-    const init = () => {
+    const init2 = () => {
       svg2 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svg2.style = `
         position: absolute;
@@ -125,7 +131,7 @@ function zoom_default(parent, state, render, pbox) {
       svg2.removeEventListener("mousedown", handleMouseDown);
       svg2.remove();
     };
-    return {init, destroy};
+    return {init: init2, destroy};
   };
   let svg = SVG();
   const transformZoomWindow = (element) => {
@@ -164,20 +170,28 @@ function zoom_default(parent, state, render, pbox) {
   const setParentCursor = (focusing) => {
     focusing ? parent.style.cursor = "zoom-in" : parent.style.cursor = "default";
   };
-  document.addEventListener("keydown", (e) => {
+  const keyDown = (e) => {
     if (e.code === "KeyZ" && !focus) {
       setParentCursor(true);
       focus = true;
       svg.init();
     }
-  });
-  document.addEventListener("keyup", (e) => {
+  };
+  const keyUp = (e) => {
     if (e.code === "KeyZ" && focus) {
       setParentCursor(false);
       focus = false;
       svg.destroy();
     }
-  });
+  };
+  document.addEventListener("keydown", keyDown);
+  document.addEventListener("keyup", keyUp);
+  return {
+    unbind: function() {
+      document.removeEventListener("keydown", keyDown);
+      document.removeEventListener("keyup", keyUp);
+    }
+  };
 }
 
 // node_modules/hotkeys-js/dist/hotkeys.esm.js
@@ -634,6 +648,12 @@ function keyboard_default(state, render, pbox) {
     render();
     return false;
   });
+  const unbind2 = () => {
+    hotkeys_esm_default.unbind();
+  };
+  return {
+    unbind: unbind2
+  };
 }
 
 // src/index.js
@@ -641,6 +661,9 @@ function src_default(options = {}) {
   let parent = null;
   let opts = {};
   let pbox = {};
+  let shortcuts = null;
+  let zoomcuts = null;
+  let dragger = null;
   const state = {
     scale: 1,
     element: null,
@@ -665,7 +688,7 @@ function src_default(options = {}) {
     if (options.element)
       element();
   };
-  const init = (newParent) => {
+  const enable = (newParent) => {
     parent = newParent;
     pbox = getBBox(newParent);
     if (options.element)
@@ -723,20 +746,39 @@ function src_default(options = {}) {
   const addEventListeners = () => {
     window.addEventListener("wheel", disableDefault, {passive: false});
     parent.addEventListener("wheel", touchPanZoom, {passive: false});
-    keyboard_default(state, render, pbox);
-    zoom_default(parent, state, render, pbox);
+    shortcuts = keyboard_default(state, render, pbox);
+    zoomcuts = zoom_default(parent, state, render, pbox);
     addDragListeners();
   };
+  const removeEventListeners = () => {
+    window.removeEventListener("wheel", disableDefault);
+    parent.removeEventListener("wheel", touchPanZoom);
+    shortcuts.unbind();
+    zoomcuts.unbind();
+    removeDragListeners();
+  };
   const addDragListeners = () => {
-    const dragger = drag_default(parent, state, render);
+    dragger = drag_default(parent, state, render);
     parent.addEventListener("mousedown", dragger.start, false);
     parent.addEventListener("mousemove", dragger.move, false);
     parent.addEventListener("mouseup", dragger.end, false);
+  };
+  const removeDragListeners = () => {
+    dragger.unbind();
+    parent.removeEventListener("mousedown", dragger.start);
+    parent.removeEventListener("mousemove", dragger.move);
+    parent.removeEventListener("mouseup", dragger.end);
   };
   const render = () => {
     window.requestAnimationFrame(() => {
       state.element.style.transform = `translate3d(${state.xoff}px,${state.yoff}px,0px)
        scale(${state.scale})`;
+      if (state.scale && opts.track) {
+        if (opts.trackRound === "simple")
+          opts.track.innerText = Number(state.scale.toFixed(1));
+        else if (opts.trackRound === "percent")
+          opts.track.innerText = `${Number((state.scale * 100).toFixed(0))}%`;
+      }
     });
   };
   const element = (el, reset) => {
@@ -748,12 +790,21 @@ function src_default(options = {}) {
     }
   };
   const scale = (factor) => {
+    if (!factor)
+      return state.scale;
+  };
+  const disable = () => {
+    removeEventListeners();
+    state.element.style.transform = "";
+    if (opts.track)
+      opts.track.innerText = "";
   };
   setup();
   return {
-    init,
+    enable,
     element,
-    scale
+    scale,
+    disable
   };
 }
 export {
