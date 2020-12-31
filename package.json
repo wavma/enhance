@@ -1,10 +1,10 @@
 {
   "scripts": {
-    "dev": "http-server -c-1",
-    "open": "open 'http://localhost:8080/demo'",
+    "dev": "web-dev-server --open demo/ --node-resolve --watch",
     "build": "npx esbuild --bundle src/index.js --outfile=dist/enhance.js --format=esm"
   },
   "devDependencies": {
+    "@web/dev-server": "^0.0.25",
     "esbuild": "^0.6.3",
     "http-server": "^0.12.3"
   },

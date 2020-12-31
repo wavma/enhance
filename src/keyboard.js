@@ -32,4 +32,12 @@ export default function(state, render, pbox) {
     render();
     return false;
   });
+
+  const unbind = () => {
+    hotkeys.unbind();
+  }
+
+  return {
+    unbind
+  }
 }

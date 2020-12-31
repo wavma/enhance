@@ -13,7 +13,7 @@
         margin: 0;
       }
       .parent {
-        position: absolute;
+        position: relative;
         /* right: 0; */
         margin-top: 85px;
         width: 800px;
@@ -60,19 +60,35 @@
       <img class="element" src="art.png" />
     </div>
 
+    <button class="js-enable">Enable</button>
+    <button class="js-disable">Disable</button>
+    <span>Scale: <span class="js-track"></span></span>
+
     <script type="module">
-      import Enhance from "../dist/enhance.js";
-      // import Enhance from "../src/index.js";
+      // import Enhance from "../dist/enhance.js";
+      import Enhance from "../src/index.js";
 
       const parent = document.querySelector(".parent");
       const element = document.querySelector(".element");
+      const track = document.querySelector(".js-track");
 
       const enhance = Enhance({
+        element,
         offset: 40,
+        track,
+        trackRound: 'percent'
       });
 
-      enhance.init(parent);
-      enhance.element(element);
+      // enhance.element(element);
+      const enable = document.querySelector('.js-enable');
+      const disable = document.querySelector('.js-disable');
+
+      enable.addEventListener('click', () => {
+        enhance.enable(parent);
+      });
+      disable.addEventListener('click', () => {
+        enhance.disable();
+      })
     </script>
   </body>
 </html>

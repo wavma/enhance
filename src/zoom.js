@@ -139,19 +139,31 @@ export default function(parent, state, render, pbox) {
       : (parent.style.cursor = "default");
   };
 
-  document.addEventListener("keydown", (e) => {
+  const keyDown = (e) => {
     if (e.code === "KeyZ" && !focus) {
       setParentCursor(true);
       focus = true;
       svg.init();
     }
-  });
+  };
 
-  document.addEventListener("keyup", (e) => {
+  const keyUp = (e) => {
     if (e.code === "KeyZ" && focus) {
       setParentCursor(false);
       focus = false;
       svg.destroy();
     }
-  });
+  };
+
+  document.addEventListener("keydown", keyDown);
+  document.addEventListener("keyup", keyUp);
+
+  // --------
+
+  return {
+    unbind: function() {
+      document.removeEventListener("keydown", keyDown);
+      document.removeEventListener("keyup", keyUp);
+    }
+  }
 }

@@ -7,6 +7,10 @@ export default function(options = {}) {
   let parent = null;
   let opts = {};
   let pbox = {};
+  let shortcuts = null;
+  let zoomcuts = null;
+  let dragger = null;
+
   const state = {
     scale: 1,
     element: null,
@@ -32,7 +36,7 @@ export default function(options = {}) {
     if (options.element) element();
   };
 
-  const init = (newParent) => {
+  const enable = (newParent) => {
     parent = newParent;
     pbox = getBBox(newParent);
 
@@ -103,18 +107,34 @@ export default function(options = {}) {
     window.addEventListener("wheel", disableDefault, { passive: false });
     parent.addEventListener("wheel", touchPanZoom, { passive: false });
 
-    keyboard(state, render, pbox);
-    zoom(parent, state, render, pbox);
+    shortcuts = keyboard(state, render, pbox);
+    zoomcuts = zoom(parent, state, render, pbox);
     addDragListeners();
   };
 
+  const removeEventListeners = () => {
+    window.removeEventListener("wheel", disableDefault);
+    parent.removeEventListener("wheel", touchPanZoom);
+    shortcuts.unbind();
+    zoomcuts.unbind();
+    removeDragListeners();
+  }
+
   const addDragListeners = () => {
-    const dragger = drag(parent, state, render);
+    dragger = drag(parent, state, render);
 
     parent.addEventListener("mousedown", dragger.start, false);
     parent.addEventListener("mousemove", dragger.move, false);
     parent.addEventListener("mouseup", dragger.end, false);
   };
+
+  const removeDragListeners = () => {
+    dragger.unbind();
+
+    parent.removeEventListener("mousedown", dragger.start);
+    parent.removeEventListener("mousemove", dragger.move);
+    parent.removeEventListener("mouseup", dragger.end);
+  }
 
   const render = () => {
     window.requestAnimationFrame(() => {
@@ -122,6 +142,10 @@ export default function(options = {}) {
         state.yoff
       }px,0px)
        scale(${state.scale})`;
+       if (state.scale && opts.track) {
+         if (opts.trackRound === 'simple') opts.track.innerText = Number((state.scale).toFixed(1));
+         else if (opts.trackRound === 'percent') opts.track.innerText = `${Number((state.scale * 100).toFixed(0))}%`;
+       }
     });
   };
 
@@ -137,12 +161,20 @@ export default function(options = {}) {
     }
   };
 
-  const scale = (factor) => {};
+  const scale = (factor) => {
+    if (!factor) return state.scale;
+  };
+
+  const disable = () => {
+    removeEventListeners();
+    state.element.style.transform = '';
+  }
 
   setup();
   return {
-    init,
+    enable,
     element,
     scale,
+    disable
   };
 }

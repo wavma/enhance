@@ -43,7 +43,7 @@ export default function(parent, state, render) {
       : (parent.style.cursor = "default");
   };
 
-  document.addEventListener("keydown", (e) => {
+  const keydownHandler = (e) => {
     if (e.code === "Space") {
       e.preventDefault();
     }
@@ -51,15 +51,23 @@ export default function(parent, state, render) {
       setParentCursor(true);
       pan = true;
     }
-  });
+  };
 
-  document.addEventListener("keyup", (e) => {
+  const keyupHandler = (e) => {
     if (e.code === "Space" && pan) {
       e.preventDefault();
       setParentCursor(false);
       pan = false;
     }
-  });
+  };
 
-  return { start, end, move };
+  document.addEventListener("keydown", keydownHandler);
+  document.addEventListener("keyup", keyupHandler);
+
+  const unbind = () => {
+    document.removeEventListener("keydown", keydownHandler);
+    document.removeEventListener("keyup", keyupHandler);
+  }
+
+  return { start, end, move, unbind };
 }
