@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "web-dev-server --open demo/ --node-resolve --watch",
-    "build": "npx esbuild --bundle src/index.js --outfile=dist/enhance.js --format=esm"
+    "build": "npx esbuild --bundle src/index.js --outfile=dist/enhance.js --format=cjs"
   },
   "devDependencies": {
     "@web/dev-server": "^0.0.25",
@@ -9,8 +9,8 @@
     "http-server": "^0.12.3"
   },
   "dependencies": {
-    "1.0.1": "^1.0.0",
     "@wavma/enhance": "^1.0.1",
+    "1.0.1": "^1.0.0",
     "esm": "^3.2.25",
     "hotkeys-js": "^3.8.1"
   },

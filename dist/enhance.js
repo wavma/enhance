@@ -1,3 +1,13 @@
+var __defineProperty = Object.defineProperty;
+var __markAsModule = (target) => {
+  return __defineProperty(target, "__esModule", {value: true});
+};
+var __export = (target, all) => {
+  __markAsModule(target);
+  for (var name in all)
+    __defineProperty(target, name, {get: all[name], enumerable: true});
+};
+
 // src/events.js
 const disableDefault = (e) => {
   (e.ctrlKey || e.metaKey) && e.preventDefault();
@@ -657,6 +667,9 @@ function keyboard_default(state, render, pbox) {
 }
 
 // src/index.js
+__export(exports, {
+  default: () => src_default
+});
 function src_default(options = {}) {
   let parent = null;
   let opts = {};
@@ -807,6 +820,3 @@ function src_default(options = {}) {
     disable
   };
 }
-export {
-  src_default as default
-};
