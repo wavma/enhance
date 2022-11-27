@@ -12,21 +12,33 @@
       body {
         margin: 0;
       }
+      .main {
+        display: flex;
+        border: 2px solid red;
+      }
+      .aside {
+        height: 100%;
+        width: 280px;
+        flex: 0 0 280px;
+        margin: 0;
+        overflow: auto;
+        border-right: 1px solid blue;
+      }
       .parent {
         position: relative;
         /* right: 0; */
         margin-top: 85px;
-        width: 800px;
-        height: 600px;
+        width: 744px;
+        height: 928px;
         background: pink;
         overflow: hidden;
       }
 
       .element {
         position: absolute;
-        /* width: 150px; */
-        /* height: 300px; */
-        /* background: teal; */
+        width: 800px;
+        height: 1000px;
+        background: teal;
         transform-origin: 0 0;
         will-change: transform;
       }
@@ -43,21 +55,24 @@
   </head>
 
   <body>
-    <div class="parent">
-      <div class="check"></div>
-      <!-- <div class="element"></div> -->
-      <!-- <svg
-        class="element"
-        width="400"
-        height="200"
-        viewBox="0 0 400 200"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <rect width="400" height="200" fill="#F56565" />
-      </svg> -->
+    <div class="main">
+      <div class="aside"></div>
+      <div class="parent">
+        <div class="check"></div>
+        <div class="element"></div>
+        <!-- <svg
+          class="element"
+          width="400"
+          height="200"
+          viewBox="0 0 400 200"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width="400" height="200" fill="#F56565" />
+        </svg> -->
 
-      <img class="element" src="art.png" />
+        <!-- <img class="element" src="art.png" /> -->
+      </div>
     </div>
 
     <button class="js-enable">Enable</button>
@@ -65,8 +80,8 @@
     <span>Scale: <span class="js-track"></span></span>
 
     <script type="module">
-      import Enhance from "../dist/enhance.js";
-      // import Enhance from "../src/index.js";
+      // import Enhance from "../dist/enhance.js";
+      import Enhance from "../src/index.js";
 
       const parent = document.querySelector(".parent");
       const element = document.querySelector(".element");
@@ -78,8 +93,13 @@
         track,
         trackRound: 'percent'
       });
+      enhance.enable(parent);
 
-      // enhance.element(element);
+      // setTimeout(()=> {
+      //   enhance.element(element);
+      // }, 1000)
+      
+
       const enable = document.querySelector('.js-enable');
       const disable = document.querySelector('.js-disable');
 

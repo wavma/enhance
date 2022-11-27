@@ -72,7 +72,7 @@ export default function(options = {}) {
 
     if (deltaWidth < deltaHeight) {
       state.scale = deltaWidth;
-      state.xoff = pbox.width - (box.width - box.x) * state.scale - opts.offset;
+      state.xoff = pbox.width - box.width * state.scale - opts.offset;
       state.yoff = (pbox.height - box.height * state.scale) / 2;
     } else {
       state.scale = deltaHeight;
