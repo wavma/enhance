@@ -1,15 +1,30 @@
-var __defineProperty = Object.defineProperty;
-var __markAsModule = (target) => {
-  return __defineProperty(target, "__esModule", {value: true});
-};
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
-  __markAsModule(target);
   for (var name in all)
-    __defineProperty(target, name, {get: all[name], enumerable: true});
+    __defProp(target, name, { get: all[name], enumerable: true });
 };
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/index.js
+var src_exports = {};
+__export(src_exports, {
+  default: () => src_default
+});
+module.exports = __toCommonJS(src_exports);
 
 // src/events.js
-const disableDefault = (e) => {
+var disableDefault = (e) => {
   (e.ctrlKey || e.metaKey) && e.preventDefault();
 };
 
@@ -72,7 +87,7 @@ function drag_default(parent, state, render) {
     document.removeEventListener("keydown", keydownHandler);
     document.removeEventListener("keyup", keyupHandler);
   };
-  return {start, end, move, unbind: unbind2};
+  return { start, end, move, unbind: unbind2 };
 }
 
 // src/zoom.js
@@ -100,7 +115,10 @@ function zoom_default(parent, state, render, pbox) {
       return p.matrixTransform(elem.getScreenCTM().inverse());
     };
     const handleMouseDown = (event) => {
-      const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      const rect = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "rect"
+      );
       const start = svgPoint(svg2, event.clientX, event.clientY);
       const color = "#0018ed";
       const drawRect = (e) => {
@@ -141,7 +159,7 @@ function zoom_default(parent, state, render, pbox) {
       svg2.removeEventListener("mousedown", handleMouseDown);
       svg2.remove();
     };
-    return {init: init2, destroy};
+    return { init: init2, destroy };
   };
   let svg = SVG();
   const transformZoomWindow = (element) => {
@@ -205,15 +223,6 @@ function zoom_default(parent, state, render, pbox) {
 }
 
 // node_modules/hotkeys-js/dist/hotkeys.esm.js
-/*!
- * hotkeys-js v3.8.1
- * A simple micro-library for defining and dispatching keyboard shortcuts. It has no dependencies.
- * 
- * Copyright (c) 2020 kenny wong <wowohoo@qq.com>
- * http://jaywcjlove.github.io/hotkeys
- * 
- * Licensed under the MIT license.
- */
 var isff = typeof navigator !== "undefined" ? navigator.userAgent.toLowerCase().indexOf("firefox") > 0 : false;
 function addEvent(object, event, method) {
   if (object.addEventListener) {
@@ -276,7 +285,7 @@ var _keyMap = {
   pageup: 33,
   pagedown: 34,
   capslock: 20,
-  "⇪": 20,
+  "\u21EA": 20,
   ",": 188,
   ".": 190,
   "/": 191,
@@ -290,15 +299,15 @@ var _keyMap = {
   "\\": 220
 };
 var _modifier = {
-  "⇧": 16,
+  "\u21E7": 16,
   shift: 16,
-  "⌥": 18,
+  "\u2325": 18,
   alt: 18,
   option: 18,
-  "⌃": 17,
+  "\u2303": 17,
   ctrl: 17,
   control: 17,
-  "⌘": 91,
+  "\u2318": 91,
   cmd: 91,
   command: 91
 };
@@ -319,9 +328,10 @@ var _mods = {
   91: false
 };
 var _handlers = {};
-for (var k = 1; k < 20; k++) {
+for (k = 1; k < 20; k++) {
   _keyMap["f".concat(k)] = 111 + k;
 }
+var k;
 var _downKeys = [];
 var _scope = "all";
 var elementHasBindEvent = [];
@@ -384,9 +394,9 @@ function clearModifier(event) {
     key = 91;
   if (key in _mods) {
     _mods[key] = false;
-    for (var k2 in _modifier) {
-      if (_modifier[k2] === key)
-        hotkeys[k2] = false;
+    for (var k in _modifier) {
+      if (_modifier[k] === key)
+        hotkeys[k] = false;
     }
   }
 }
@@ -490,9 +500,9 @@ function dispatch(event) {
   });
   if (key in _mods) {
     _mods[key] = true;
-    for (var k2 in _modifier) {
-      if (_modifier[k2] === key)
-        hotkeys[k2] = true;
+    for (var k in _modifier) {
+      if (_modifier[k] === key)
+        hotkeys[k] = true;
     }
     if (!asterisk)
       return;
@@ -529,8 +539,8 @@ function dispatch(event) {
         var splitKey = record.splitKey;
         var keyShortcut = record.key.split(splitKey);
         var _downKeysCurrent = [];
-        for (var a2 = 0; a2 < keyShortcut.length; a2++) {
-          _downKeysCurrent.push(code(keyShortcut[a2]));
+        for (var a = 0; a < keyShortcut.length; a++) {
+          _downKeysCurrent.push(code(keyShortcut[a]));
         }
         if (_downKeysCurrent.sort().join("") === _downKeys.sort().join("")) {
           eventHandler(event, record, scope);
@@ -612,13 +622,14 @@ var _api = {
   filter,
   unbind
 };
-for (var a in _api) {
+for (a in _api) {
   if (Object.prototype.hasOwnProperty.call(_api, a)) {
     hotkeys[a] = _api[a];
   }
 }
+var a;
 if (typeof window !== "undefined") {
-  var _hotkeys = window.hotkeys;
+  _hotkeys = window.hotkeys;
   hotkeys.noConflict = function(deep) {
     if (deep && window.hotkeys === hotkeys) {
       window.hotkeys = _hotkeys;
@@ -627,6 +638,7 @@ if (typeof window !== "undefined") {
   };
   window.hotkeys = hotkeys;
 }
+var _hotkeys;
 var hotkeys_esm_default = hotkeys;
 
 // src/keyboard.js
@@ -667,9 +679,6 @@ function keyboard_default(state, render, pbox) {
 }
 
 // src/index.js
-__export(exports, {
-  default: () => src_default
-});
 function src_default(options = {}) {
   let parent = null;
   let opts = {};
@@ -724,15 +733,15 @@ function src_default(options = {}) {
   };
   const setElementSize = (el) => {
     let x, y, width, height;
-    ({x, y, width, height} = getBBox(el));
-    setSize({x, y, width, height});
+    ({ x, y, width, height } = getBBox(el));
+    setSize({ x, y, width, height });
   };
   const setSize = (box = {}) => {
     const deltaWidth = (pbox.width - opts.offset * 2) / box.width;
     const deltaHeight = (pbox.height - options.offset * 2) / box.height;
     if (deltaWidth < deltaHeight) {
       state.scale = deltaWidth;
-      state.xoff = pbox.width - (box.width - box.x) * state.scale - opts.offset;
+      state.xoff = pbox.width - box.width * state.scale - opts.offset;
       state.yoff = (pbox.height - box.height * state.scale) / 2;
     } else {
       state.scale = deltaHeight;
@@ -757,8 +766,8 @@ function src_default(options = {}) {
     render();
   };
   const addEventListeners = () => {
-    window.addEventListener("wheel", disableDefault, {passive: false});
-    parent.addEventListener("wheel", touchPanZoom, {passive: false});
+    window.addEventListener("wheel", disableDefault, { passive: false });
+    parent.addEventListener("wheel", touchPanZoom, { passive: false });
     shortcuts = keyboard_default(state, render, pbox);
     zoomcuts = zoom_default(parent, state, render, pbox);
     addDragListeners();
@@ -820,3 +829,12 @@ function src_default(options = {}) {
     disable
   };
 }
+/*!
+ * hotkeys-js v3.8.1
+ * A simple micro-library for defining and dispatching keyboard shortcuts. It has no dependencies.
+ * 
+ * Copyright (c) 2020 kenny wong <wowohoo@qq.com>
+ * http://jaywcjlove.github.io/hotkeys
+ * 
+ * Licensed under the MIT license.
+ */
